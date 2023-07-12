@@ -7,7 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Topic extends Model
 {
-    protected $guarded;
+    protected $fillable =[
+        'name','classroom_id','user_id'
+    ];
     use HasFactory;
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';

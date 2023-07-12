@@ -21,13 +21,11 @@ return new class extends Migration
             $table->string('room')->nullable();
             $table->string('cover_image_path')->nullable();
             $table->string('theme')->nullable();
-            $table->foreignId('user_id')
-
-            ->constrained('users','id')
-
-            ->cascadeOnDelete();
+            // $table->foreignId('user_id')
+            // ->constrained('users','id')
+            // ->cascadeOnDelete();
             $table->enum('status',['active','archives'])->default('active');
-          
+
             $table->timestamps();
         });
     }
