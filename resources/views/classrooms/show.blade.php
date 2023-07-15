@@ -1,4 +1,6 @@
-@include('partiels.header')
+@extends('layouts.master')
+@section('title',$classroom->name)
+@section('content')
     <div class="container">
     <h1>{{ $classroom->name }} (#{{ $classroom->id }}</h1>
     <h3>{{$classroom->section}}</h3>
@@ -17,4 +19,4 @@
         </div>
     </div>
     </div>
-@include('partiels.footer')
+    @endsection
