@@ -2,6 +2,17 @@
 
     <div class="container">
     <h1>Create Topics</h1>
+     @if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+        @foreach ($errors->all() as $error )
+            <li>{{$error}}</li>
+
+        @endforeach
+</ul>
+    </div>
+
+    @endif
 
 <form action="{{route('topics.store')}}" method="post">
     {{--
@@ -9,20 +20,8 @@
     {{csrf_field()}}
     --}}
     @csrf
-    <div class="form-floating mb-3">
-  <input type="text" class="form-control" id="name" name="name" placeholder="Topic Name">
-  <label for="floatingInput">topic Name</label>
-</div>
-<div class="form-floating mb-3">
-  <input type="text" class="form-control" id="classroom_id" name="classroom_id" placeholder="classroom_id">
-  <label for="floatingPassword">classroom id</label>
-</div>
-<div class="form-floating mb-3">
-  <input type="text" class="form-control" id="user-id" name="user_id" placeholder="user-id">
-  <label for="floatingPassword">user id</label>
-</div>
-
-<button type="submit" class="btn btn-primary">Create topic</button>
+   @include('topics._form',[
+    'button_label' => 'Create topic'])
 </form>
 </div>
 @include('partiels.footer')

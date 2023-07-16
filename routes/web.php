@@ -49,15 +49,14 @@ Route::get('/', function () {
     // ]);
 
 
-    Route::get('/classrooms/topics',[TopicsController::class,'index'])->name('topics.index');
-Route::get('/classrooms/topics/create',[TopicsController::class,'create'])->name('topics.create');
-Route::post('/classrooms/topics',[TopicsController::class,'store'])->name('topics.store');
+    Route::get('/topics',[TopicsController::class,'index'])->name('topics.index');
+Route::get('/topics/create',[TopicsController::class,'create'])->name('topics.create');
+Route::post('/topics',[TopicsController::class,'store'])->name('topics.store');
 Route::get('/classrooms/topics/{topics}',[TopicsController::class,'show'])->name('topics.show');
 Route::get('/{topics}/edit',[TopicsController::class,'edit'])->name('topics.edit');
  Route::put('topic/{topics}/update',[TopicsController::class,'update'])->name('topics.update');
     Route::delete('topic/{topics}',[TopicsController::class,'destroy'])->name('topics.destroy');
 
 Route::resources([
-    'topics' => TopicsController::class,
     'classrooms' => ClassroomsController::class
 ]);

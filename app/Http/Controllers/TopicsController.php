@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\TopicRequest;
 use App\Models\Topic;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
@@ -16,11 +17,15 @@ class TopicsController extends Controller
         return view('topics.index', compact('topics'));
     }
    public function create() {
-    return view()->make('topics.create');
+    // return view()->make('topics.create');
+    return view()->make('topics.create',[
+        'topic' => new Topic()
+    ]);
 
     }
-    public function store(Request $request)  {
-        $topics = Topic::create($request->all());
+    public function store(TopicRequest $request)  {
+        $validated = $request->validated();
+        $topic= Topic::create($validated);
         return redirect()->route('topics.index');
 
     }
@@ -43,10 +48,12 @@ class TopicsController extends Controller
 
     }
 
-    public function update(Request $request, $id)
+    public function update(TopicRequest $request, $id)
     {
+        $validated = $request->validated();
+
         $topic = Topic::find($id);
-        $topic->update($request->all());
+        $topic->update($validated);
 
 
         return Redirect::route('topics.index');
