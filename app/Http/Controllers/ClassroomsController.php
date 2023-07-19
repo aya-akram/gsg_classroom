@@ -175,7 +175,14 @@ class ClassroomsController extends Controller
 
         // $classroom->fill($request->all())->save();
 
-        return Redirect::route('classrooms.index')->with('success','Classroom updated');
+
+
+        return Redirect::route('classrooms.index')         //->with('success','Classroom updated');
+        ->with('success','Classroom updated');
+        // Session::flash('success','Classroom updated');
+        // Session::flash('error','Classroom updated');
+        //->with('success','Classroom updated');
+        //->with('error','Classroom updated');
     }
 
 
