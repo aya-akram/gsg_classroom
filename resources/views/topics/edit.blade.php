@@ -3,7 +3,7 @@
     <div class="container">
     <h1>Edit Topic</h1>
 
-<form action="{{route('topics.update',$topic->id)}}" method="post">
+<form action="{{route('classrooms.topics.update',['classroom' => $classroom,'topic'=>$topic])}}" method="post">
 
     @csrf
 

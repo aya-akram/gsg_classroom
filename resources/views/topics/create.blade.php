@@ -14,7 +14,7 @@
 
     @endif
 
-<form action="{{route('topics.store')}}" method="post">
+<form action="{{route('classrooms.topics.store',['classroom' => $classroom])}}" method="post">
     {{--
         <input type="hidden" name="_token" value="{{csrf_token()}}">
     {{csrf_field()}}

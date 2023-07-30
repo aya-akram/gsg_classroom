@@ -15,7 +15,7 @@
             </div>
         </div>
         <div class="col-md-9">
-
+            <p>Inviation link : <a href="{{$invation_link}}">{{$invation_link}}</a></p>
         </div>
     </div>
     </div>

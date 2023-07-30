@@ -3,7 +3,10 @@
     ])
 
 <div class="card">
-                <img src="storage/{{$classroom->cover_image_path}}" class="card-img-top" alt="">
+                <!-- <img src="storage/{{$classroom->cover_image_path}}" class="card-img-top" alt=""> -->
+               <!-- <img src="{{Storage::disk('public')->url($classroom->cover_image_path) }}" class="card-img-top" alt=""> -->
+               <img src="{{asset('storage/'.$classroom->cover_image_path )}}" class="card-img-top" alt="">
+
                 <div class="card-body">
                     <h5 class="card-title">{{$classroom->name}}</h5>
                     <p class="card-text">{{$classroom->section}} - {{$classroom->room}}</p>

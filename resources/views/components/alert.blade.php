@@ -9,10 +9,5 @@
   {{session($name)}}
     </div>
 
-    <!-- <div {{
-        $attribute->class(['alert','alert-success' => $name == 'success'])
-        ->merge([
-            'id' =>'alert'
-            ])
-    }}> {{session($name)}}</div> -->
+   
 @endif

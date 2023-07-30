@@ -2,18 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ClassroomRequest;
+use Exception;
 use App\Models\Classroom;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\URL;
+// use Illuminate\View\View as BaseView;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
 use Illuminate\Http\RedirectResponse;
+use App\Http\Requests\ClassroomRequest;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Session;
-// use Illuminate\View\View as BaseView;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Contracts\Support\Renderable;
-use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
 class ClassroomsController extends Controller
@@ -21,13 +26,18 @@ class ClassroomsController extends Controller
     //Actions
     public function index(Request $request)
     {
+        // dd($request->user());
+        // dd(Auth::guard('admin'))
+
         // $name="aya";
         // $title= "Developer";
         // return respnse:view redirect json_data file string
 
         // return Redirect::away('https://google.com');
         // $classroom = Classroom::all(); //collection
-        $classrooms = Classroom::orderBy('created_at', 'DESC')->get();
+        $classrooms = Classroom::active()
+        ->recent()
+        ->orderBy('created_at', 'DESC')->get();
         // session();//return session object
       $success=  session('success'); // return value of success in the session
     //   Session::reflash();
@@ -37,7 +47,7 @@ class ClassroomsController extends Controller
     //   Session::put('success','ss!');
     //   Session::flash('success','ss!');
 
-      Session::remove('success');
+    //   Session::remove('success');
 
 
         return view('classrooms.index', compact('classrooms','success'));
@@ -90,7 +100,20 @@ class ClassroomsController extends Controller
 
         // ]);
         $validated['code'] = Str::random(8);
-        $classroom = Classroom::create($validated);
+        $validated['user_id'] = Auth::id();
+        DB::beginTransaction();
+        try{
+            $classroom = Classroom::create($validated);
+            $classroom->join(Auth::id(),'teacher');
+
+
+            DB::commit();
+        }catch(QueryException  $e){
+            DB::rollBack();
+            return back()->with('error',$e->getMessage())
+            ->withInput();
+        }
+
         // $classroom = new Classroom($request->all());
         // $classroom->save();
 
@@ -102,17 +125,22 @@ class ClassroomsController extends Controller
 
     public function show(Classroom $classroom)
     {
+        $invitation_link = URL::signedRoute('classrooms.join', [
+           'classroom' => $classroom->id,
+           'code' => $classroom->code,
+        ]);
         // return view('classrooms.show')->with([
         //     'id' => $id,
         //     'edit' => $edit
         // ]);
         // $classroom = Classroom::where('id', '=', $id)->first();
-        // $classroom = Classroom::findOrFail($id);
+        // $classroom = Classroom::withTrashed()->findOrFail($classroom);
         // if(!$classroom){
         //     abort(404);
         // }
         return View::make('classrooms.show')->with([
             'classroom' => $classroom,
+            'invation_link' => $invitation_link
 
         ]);
     }
@@ -194,8 +222,37 @@ class ClassroomsController extends Controller
         // $classroom=Classroom::find($id);
                     //  Storage::disk(Classroom::$disk)->delete($classroom->cover_image_path);
             $classroom->delete();
-            Classroom::delateCoverImage($classroom->cover_image_path);
-        //flash message
+            // Classroom::delateCoverImage($classroom->cover_image_path);
+         //flash message
         return redirect(route('classrooms.index'))->with('success','Classroom delated');
     }
+
+    public function trashed() {
+        $classrooms = Classroom::onlyTrashed()
+        ->latest('deleted_at')
+        ->get();
+        return view('classrooms.trashed',compact('classrooms'));
+    }
+
+    public function restore($id) {
+        $classroom = Classroom::onlyTrashed()->findOrFail($id);
+        $classroom->restore();
+
+        return redirect()
+        ->route('classrooms.index')
+        ->with('success',"Classroom ({$classroom->name}) restored");
+
+    }
+
+    public function forceDelete($id){
+        $classroom = Classroom::withTrashed()->findOrFail($id);
+        $classroom->forceDelete();
+        Classroom::delateCoverImage($classroom->covr_image_path);
+        return redirect()
+        ->route('classrooms.trashed')
+        ->with('success',"Classroom {{$classroom->name}} deleted forrver");
+
+
+    }
+
 }

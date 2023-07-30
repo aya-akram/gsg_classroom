@@ -6,12 +6,16 @@
 
         <div class="col-md-3">
             <h6>All topics</h6>
+            <div class="col-md-4">
+                    <a href="{{route('topics.trashed')}}" class="btn btn-sm btn-success">Trashed Topic</a>
+           </div>
             <div class="col-md-3">
             @foreach ($topics as $topic )
             <p>{{$topic->name}}</p>
             @endforeach
 
             </div>
+
 
 
         </div>
@@ -24,18 +28,20 @@
                     <p class="card-text">Classroom_id:{{$topic->classroom_id}} , User_id:{{$topic->user_id}}</p>
                     <div class="row">
                     <div class="col-md-1">
-                    <a href="{{route('topics.show',$topic->id)}}" class="btn btn-sm btn-primary">View</a>
+                    <a href="{{route('classrooms.topics.show',['classroom' => $classroom,'topic'=>$topic])}}" class="btn btn-sm btn-primary">View</a>
                     </div>
                     <div class="col-md-1">
-                    <a href="{{route('topics.edit',$topic->id)}}" class="btn btn-sm btn-dark">Edit</a>
+                    <a href="{{route('classrooms.topics.edit',['classroom' => $classroom,'topic'=>$topic])}}" class="btn btn-sm btn-dark">Edit</a>
                     </div>
                     <div class="col-md-1">
-                     <form action="{{route('topics.destroy',$topic->id)}}" method="post">
-                    @csrf
+                     <form action="{{ route('classrooms.topics.destroy', ['classroom' => $classroom, 'topic' => $topic])}}" method="post">
+
+                     @csrf
                     @method('delete')
                     <button type="submit" class="btn btn-sm btn-danger m-1">Delete</button>
                     </form>
                     </div>
+
                     </div>
 
         @endforeach

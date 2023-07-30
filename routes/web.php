@@ -1,8 +1,12 @@
 <?php
 
-use App\Http\Controllers\ClassroomsController;
-use App\Http\Controllers\TopicsController;
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ClassroomsController;
+use App\Http\Controllers\JoinClassroomController;
+use App\Http\Controllers\LoginController;
+use App\Http\Controllers\TopicsController;
+use App\Models\Classroom;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,48 +19,66 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+
 Route::get('/', function () {
     return view('welcome');
 })->name('home');
-// Route::get('/classrooms','App\Http\Controllers\ClassroomsController@index');
-// Route::get('/classrooms',[ClassroomsController::class,'index'])->name('classrooms.index');
-// Route::get('/classrooms/create',[ClassroomsController::class,'create'])->name('classrooms.create');
-// Route::post('/classrooms',[ClassroomsController::class,'store'])->name('classrooms.store');
 
-// // Route::get('/classrooms/edit/{id}',[ClassroomsController::class,'edit'])->name('classrooms.edit');
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
 
-// Route::get('/classrooms/{classroom}',[ClassroomsController::class,'show'])->name('classrooms.show')
-//     ->where([
-//         'classroom' => '\d+',
-//     ]);
-//     // ->where('edit','yes|no');
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
 
-//     Route::get('/classrooms/{classroom}/edit',[ClassroomsController::class,'edit'])->name('classrooms.edit')
-//     ->where('classroom','\d+');
+require __DIR__.'/auth.php';
 
-//     Route::put('/classrooms/{classroom}',[ClassroomsController::class,'update'])->name('classrooms.update')
-//     ->where('classroom','\d+');
+// Route::get('/topics',[TopicsController::class,'index'])->name('topics.index');
+// Route::get('/topics/create',[TopicsController::class,'create'])->name('topics.create');
+// Route::post('/topics',[TopicsController::class,'store'])->name('topics.store');
+// Route::get('/classrooms/topics/{topics}',[TopicsController::class,'show'])->name('topics.show');
+// Route::get('/{topics}/edit',[TopicsController::class,'edit'])->name('topics.edit');
+//  Route::put('topic/{topics}/update',[TopicsController::class,'update'])->name('topics.update');
+//     Route::delete('topic/{topics}',[TopicsController::class,'destroy'])->name('topics.destroy');
 
-//     Route::delete('/classrooms/{classroom}',[ClassroomsController::class,'destroy'])->name('classrooms.destroy')
-//     ->where('classroom','\d+');
-    // Route::resource('/classrooms', ClassroomsController::class)
-    // ->names([
-    // // 'inadex' => 'classrooms/index',
-    // // 'create' => 'classrooms/create',
-    // ])
-    // ->where([
-    //     'classrooms' => '\d+'
-    // ]);
+    // Route::get('/classrooms/{classroom}/topics');
+
+    Route::get('/topics/trashed',[TopicsController::class,'trashed'])->name('topics.trashed');
+    // Route::put('/classrooms/{classroom}/topics/{id}/restore', [TopicsController::class, 'restore'])->name('topics.restore');
+    // Route::put('/topics/trashed/{topic}',[TopicsController::class,'restore'])->name('topics.restore');
+    Route::put('/topics/trashed/{topic}',[TopicsController::class,'restore'])->name('topics.restore');
+
+    Route::delete('/topics/trashed/{topic}',[TopicsController::class,'forceDelete'])->name('topics.forceDelete');
+    Route::resource('classrooms.topics', TopicsController::class);
+
+    // Route::group([
+    //     'middleware' => ['auth'],
+    // ],function(){
+            // Shared routes
+    // });
+    Route::middleware(['auth'])->group(function(){
+        Route::prefix('/classrooms/trashed')
+        ->as('classrooms.')
+        ->controller(ClassroomsController::class)
+        ->group(function(){
+            Route::get('/','trashed')->name('trashed');
+            Route::put('/{classroom}','restore')->name('restore');
+            Route::delete('/{classroom}','forceDelete')->name('force-delete');
+
+        });
+        Route::get('/classrooms/{classroom}/join',[JoinClassroomController::class,'create'])->middleware('signed')->name('classrooms.join');
+        Route::post('/classrooms/{classroom}/join',[JoinClassroomController::class,'store']);
+        Route::resources([
+            'classrooms' => ClassroomsController::class
+        ]);
 
 
-    Route::get('/topics',[TopicsController::class,'index'])->name('topics.index');
-Route::get('/topics/create',[TopicsController::class,'create'])->name('topics.create');
-Route::post('/topics',[TopicsController::class,'store'])->name('topics.store');
-Route::get('/classrooms/topics/{topics}',[TopicsController::class,'show'])->name('topics.show');
-Route::get('/{topics}/edit',[TopicsController::class,'edit'])->name('topics.edit');
- Route::put('topic/{topics}/update',[TopicsController::class,'update'])->name('topics.update');
-    Route::delete('topic/{topics}',[TopicsController::class,'destroy'])->name('topics.destroy');
 
-Route::resources([
-    'classrooms' => ClassroomsController::class
-]);
+
+    });
+
+
+

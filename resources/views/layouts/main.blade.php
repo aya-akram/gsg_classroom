@@ -27,7 +27,6 @@
             Create
           </a>
           <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="{{route('topics.create')}}">Topics</a></li>
             <li><a class="dropdown-item" href="#">Another action</a></li>
             <li><hr class="dropdown-divider"></li>
             <li><a class="dropdown-item" href="#">Something else here</a></li>
@@ -37,6 +36,9 @@
           <a class="nav-link disabled">Disabled</a>
         </li>
       </ul>
+      <div>
+        {{Auth::user()->name}}
+      </div>
       <form class="d-flex" role="search">
         <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
         <button class="btn btn-outline-success" type="submit">Search</button>
