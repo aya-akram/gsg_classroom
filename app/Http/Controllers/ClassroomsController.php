@@ -99,8 +99,8 @@ class ClassroomsController extends Controller
         //     'user_id' => Str::random(1),
 
         // ]);
-        $validated['code'] = Str::random(8);
-        $validated['user_id'] = Auth::id();
+        // $validated['code'] = Str::random(8);
+        // $validated['user_id'] = Auth::id();
         DB::beginTransaction();
         try{
             $classroom = Classroom::create($validated);
@@ -247,7 +247,7 @@ class ClassroomsController extends Controller
     public function forceDelete($id){
         $classroom = Classroom::withTrashed()->findOrFail($id);
         $classroom->forceDelete();
-        Classroom::delateCoverImage($classroom->covr_image_path);
+        // Classroom::delateCoverImage($classroom->covr_image_path);
         return redirect()
         ->route('classrooms.trashed')
         ->with('success',"Classroom {{$classroom->name}} deleted forrver");

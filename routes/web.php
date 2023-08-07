@@ -1,12 +1,15 @@
 <?php
 
+use App\Http\Controllers\ClassroomPeopleController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ClassroomsController;
+use App\Http\Controllers\ClassworkController;
 use App\Http\Controllers\JoinClassroomController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\TopicsController;
 use App\Models\Classroom;
+use App\Models\Classwork;
 
 /*
 |--------------------------------------------------------------------------
@@ -72,8 +75,11 @@ require __DIR__.'/auth.php';
         Route::get('/classrooms/{classroom}/join',[JoinClassroomController::class,'create'])->middleware('signed')->name('classrooms.join');
         Route::post('/classrooms/{classroom}/join',[JoinClassroomController::class,'store']);
         Route::resources([
-            'classrooms' => ClassroomsController::class
+            'classrooms' => ClassroomsController::class,
         ]);
+        Route::resource('classrooms.classworks' ,ClassworkController::class);
+        Route::get('/clasroom/{classroom}/people',[ClassroomPeopleController::class,'index'])->name('classrooms.people');
+        Route::delete('/clasroom/{classroom}/people',[ClassroomPeopleController::class,'destroy'])->name('classrooms.people.destroy');
 
 
 

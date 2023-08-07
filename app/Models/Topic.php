@@ -23,5 +23,8 @@ class Topic extends Model
     public $incrementing = true;
 
     public $timestamps = false;
+    public function classworks(){
+        return $this->hasMany(Classwork::class,'topic_id','id');
+    }
 
 }

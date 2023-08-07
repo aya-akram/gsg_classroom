@@ -15,7 +15,7 @@ class JoinClassroomController extends Controller
     public function create($id){
         $classroom = Classroom::withoutGlobalScope(UserClassroomScope::class)->active()->findOrFail($id);
         try{
-             $this->exists($id,Auth::id());
+             $this->exists($classroom,Auth::id());
 
         }catch(Exception $e){
             return redirect()->route('classrooms.show',$id);
@@ -32,25 +32,37 @@ class JoinClassroomController extends Controller
         ]);
         $classroom = Classroom::withoutGlobalScope(UserClassroomScope::class)->active()->findOrFail($id);
         try{
-            $this->exists($id,Auth::id());
+            $classroom->join(Auth::id(),$request->input('role','student'));
 
        }catch(Exception $e){
            return redirect()->route('classrooms.show',$id);
 
        }
-       $classroom->join(Auth::id(),$request->input('role','student'));
         return redirect()->route('classrooms.show',$id);
 
 
     }
 
-    protected function exists($classroom_id,$user_id){
-        $exists= DB::table('classroom_user')
-        ->where('classroom_id', $classroom_id)
-        ->where('user_id', $user_id)
-        ->exists();
+    protected function exists(Classroom $classroom,$user_id){
+        // $exists= DB::table('classroom_user')
+        // ->where('classroom_id', $classroom_id)
+        // ->where('user_id', $user_id)
+        // ->dd()
+        // ->exists();
+
+        // //TO do
+        // //Change the above query to use the relationship
+        // if($exists){
+        //     throw new Exception('user already joind the classroom');
+
+        // }
+        // $classroom = Classroom::find($classroom_id);
+        // dd($classroom);
+
+        $exists = $classroom->users()->where('id','=', $user_id)->exists();
         if($exists){
-            throw new Exception('user already joind the classroom');
+            throw new Exception('user already joined the classroom');
+        }
         }
     }
-}
+

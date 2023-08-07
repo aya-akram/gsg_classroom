@@ -1,7 +1,9 @@
 <x-main-layout title="Classrooms" class="">
 <div class="container">
     <h1>Classrooms</h1>
-<x-alert name="success" />
+<x-alert name="success" class="alert-success" />
+<x-alert name="error" id="error" class="aler-danger" />
+
 
     <div class="row">
         @foreach ($classrooms as $classroom )
