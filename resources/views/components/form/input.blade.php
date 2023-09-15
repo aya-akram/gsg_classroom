@@ -1,11 +1,15 @@
 @props([
-    'value' =>'','name'
+    'value' =>'','name','id'
     ])
 
+    @php
+    $old_name = str_replace('[','.',$name);
+    $old_name = str_replace(']','',$old_name);
 
+@endphp
 
-<input 
- value="{{ old($name, $value) }}"
+<input
+ value="{{ old($old_name, $value) }}"
  name="{{$name}}"
  id="{{$id ?? $name}}"
   {{ $attributes->merge([
@@ -13,7 +17,7 @@
     ])
     ->class([
         'form-control',
-        'is-invalid' => $errors->has($name)
+        'is-invalid' => $errors->has($old_name)
     ]) }}
     >
 

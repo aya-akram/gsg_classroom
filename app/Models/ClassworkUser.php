@@ -9,8 +9,14 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
 class ClassworkUser extends Pivot
 {
     use HasFactory;
+    public function getUpdatedAtColumn()
+    {
+
+    }
     public function setUpdatedAt($value)
     {
+
+        // $this->{$this->getUpdatedAtColumn()} = $value;
         return $this;
 
     }

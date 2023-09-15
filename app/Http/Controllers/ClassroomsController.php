@@ -23,9 +23,15 @@ use Illuminate\Validation\ValidationException;
 
 class ClassroomsController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('subscribed')->only('create','store');
+        $this->authorizeResource(Classroom::class,'classroom');
+    }
     //Actions
     public function index(Request $request)
     {
+        // $this->authorize('view-any',Classroom::class);
         // dd($request->user());
         // dd(Auth::guard('admin'))
 

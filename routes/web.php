@@ -1,13 +1,21 @@
 <?php
 
+use App\Http\Controllers\Admin\TwoFactorAuthenticationController;
 use App\Http\Controllers\ClassroomPeopleController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ClassroomsController;
 use App\Http\Controllers\ClassworkController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\JoinClassroomController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\PaymentsController;
+use App\Http\Controllers\PlanController;
+use App\Http\Controllers\SubmissionController;
+use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\TopicsController;
+use App\Http\Controllers\Webhooks\StripeController;
+use App\Http\Middleware\ApplyUserPreferences;
 use App\Models\Classroom;
 use App\Models\Classwork;
 
@@ -26,10 +34,11 @@ use App\Models\Classwork;
 Route::get('/', function () {
     return view('welcome');
 })->name('home');
+Route::get('/admin/2fa',[TwoFactorAuthenticationController::class,'create']);
 
 Route::get('/dashboard', function () {
     return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+})->middleware(['auth:admin,web'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -37,7 +46,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
+// require __DIR__.'/auth.php';
 
 // Route::get('/topics',[TopicsController::class,'index'])->name('topics.index');
 // Route::get('/topics/create',[TopicsController::class,'create'])->name('topics.create');
@@ -62,7 +71,16 @@ require __DIR__.'/auth.php';
     // ],function(){
             // Shared routes
     // });
-    Route::middleware(['auth'])->group(function(){
+
+    Route::get('plans',[PlanController::class,'index'])->name('plans');
+
+    Route::middleware(['auth:web,admin'])->group(function(){
+        Route::get('subscriptions/{subscription}/pay',[PaymentsController::class,'create'])->name('checkout');
+        Route::post('subscriptions',[SubscriptionController::class, 'store'])->name('subscriptions.store');
+        Route::post('payments',[PaymentsController::class,'store'])->name('payments.store');
+        Route::get('/payments/{subscription}/success',[PaymentsController::class,'success'])->name('payments.success');
+        Route::get('/payments/{subscription}/cancel',[PaymentsController::class,'cancel'])->name('payments.cancel');
+
         Route::prefix('/classrooms/trashed')
         ->as('classrooms.')
         ->controller(ClassroomsController::class)
@@ -72,7 +90,7 @@ require __DIR__.'/auth.php';
             Route::delete('/{classroom}','forceDelete')->name('force-delete');
 
         });
-        Route::get('/classrooms/{classroom}/join',[JoinClassroomController::class,'create'])->middleware('signed')->name('classrooms.join');
+        Route::get('/classrooms/{classroom}/join',[JoinClassroomController::class,'create'])->name('classrooms.join');
         Route::post('/classrooms/{classroom}/join',[JoinClassroomController::class,'store']);
         Route::resources([
             'classrooms' => ClassroomsController::class,
@@ -81,10 +99,13 @@ require __DIR__.'/auth.php';
         Route::get('/clasroom/{classroom}/people',[ClassroomPeopleController::class,'index'])->name('classrooms.people');
         Route::delete('/clasroom/{classroom}/people',[ClassroomPeopleController::class,'destroy'])->name('classrooms.people.destroy');
 
+        Route::post('comments',[CommentController::class, 'store'])->name('comments.store');
+        Route::post('classworks/{classwork}/submissions',[SubmissionController::class, 'store'])->name('submissions.store');
 
-
+        Route::get('submissions/{submission}/file',[SubmissionController::class,'file'])->name('submissions.file');
 
     });
 
+    // Route::post('/payments/stripe/webhook',StripeController::class);
 
 

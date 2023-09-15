@@ -17,8 +17,11 @@ class JoinClassroomController extends Controller
         try{
              $this->exists($classroom,Auth::id());
 
+
         }catch(Exception $e){
+
             return redirect()->route('classrooms.show',$id);
+
 
         }
 

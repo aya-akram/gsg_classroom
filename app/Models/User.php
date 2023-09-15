@@ -5,13 +5,14 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Translation\HasLocalePreference;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable implements MustVerifyEmail
+class User extends Authenticatable implements MustVerifyEmail, HasLocalePreference
 {
     use HasApiTokens, HasFactory, Notifiable;
 
@@ -74,7 +75,46 @@ public function createdClassrooms(){
 }
 
 public function classworks(){
-    return $this->belongsTo(Classwork::class);
+    return $this->belongsToMany(Classwork::class)
+    ->withPivot(['grade','status','submitted_at','created_at'])
+    ->using(ClassworkUser::class);
+
+}
+public function comments(){
+
+return $this->hasMany(Comment::class);
+}
+public function submissions(){
+    return $this->hasMany(Submission::class);
+}
+public function profiles(){
+    return $this->hasOne(Profile::class,'user_id','id')->withDefault();
+}
+public function subscriptions()
+{
+    return $this->hasMany(Subscription::class);
+}
+
+public function routeNotificationForMail( $notification = null)
+{
+    return $this->email;
+
+}
+public function routeNotificationForVonage( $notification = null)
+{
+    return '972567591339';
+
+}
+public function routeNotificationForHadara( $notification = null)
+{
+    return '972567591339';
+
+}
+public function receivesBroadcastNotificationsOn(){
+    return 'Notifications.' .$this->id;
+}
+public function preferredLocale() {
+    return $this->profiles->locale;
 
 }
 }

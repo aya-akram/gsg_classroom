@@ -1,48 +1,51 @@
 <!doctype html>
-<html lang="en">
+<html dir="{{App::isLocale('ar')? 'rtl' : 'ltr'}}" lang="{{App::currentLocale()}}">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{$title}}</title>
+    @if (App::isLocal('ar'))
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.rtl.min.css" integrity="sha384-PRrgQVJ8NNHGieOA1grGdCTIt4h21CzJs6SnWH4YMQ6G5F5+IEzOHz67L4SQaF0o" crossorigin="anonymous">
+    @else
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
-  </head>
+
+    @endif
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+
+</head>
   <body>
     <header class="mb-5">
     <nav class="navbar navbar-expand-lg bg-body-tertiary">
   <div class="container">
+ {{-- <img src="{{asset('assets/images/googleclasroom.jpeg')}}" width="50">
+    <a class="navbar-brand" href="{{route('home')}}">{{config('app.name','Laravel')}}</a> --}}
     <a class="navbar-brand" href="{{route('home')}}">{{config('app.name','Laravel')}}</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="#">Home</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Link</a>
-        </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Create
+
+    <div class="dropdown text-end">
+          <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+            <img src="{{asset('assets/images/googleclasroom.jpeg')}}" width="50">
           </a>
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="#">Another action</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="#">Something else here</a></li>
+          <ul class="dropdown-menu text-small" style="">
+            <li><a class="navbar-brand" href="{{route('classrooms.create')}}">Create Classroom</a></li>
+            <li><a class="navbar-brand" href="{{route('classrooms.trashed')}}">Trashed Classroom</a></li>
+            <li><a class="navbar-brand" href="{{route('topics.trashed')}}">Trashed Topic</a></li>
+
+
+
+
+
           </ul>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link disabled">Disabled</a>
-        </li>
-      </ul>
-      <div>
+          <x-user-notification-menu count="5"/>
+        </div>
+
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+     {{-- <div>
         {{Auth::user()->name}}
       </div>
-      <form class="d-flex" role="search">
-        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-        <button class="btn btn-outline-success" type="submit">Search</button>
-      </form>
+      --}}
+
     </div>
   </div>
 </nav>
@@ -75,7 +78,13 @@
     </ul>
 </footer>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+<script>
+    var classroomId;
+    const userId = "{{Auth::id()}}";
+    </script>
 @stack('scripts')
+@vite(['resources/js/app.js'])
+
 </body>
 
 </html>

@@ -3,11 +3,15 @@
 namespace App\Providers;
 
 use App\Models\Classroom;
+use App\Events\ClassworkCreated;
 use App\Observers\ClassroomObserver;
-use Illuminate\Auth\Events\Registered;
-use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
-use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Auth\Events\Registered;
+use App\Listeners\PostInClassroomStream;
+use App\Listeners\SendNotificationToAssignedStudents;
+use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
+use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -20,6 +24,10 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
+       ClassworkCreated::class =>[
+            PostInClassroomStream::class,
+            SendNotificationToAssignedStudents::class
+        ]
     ];
 
     // protected $observers = [
@@ -31,7 +39,12 @@ class EventServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        parent::boot();
+        Relation::morphMap([
+            'user' => 'App\Models\User',
+        ]);
         // Classroom::observe(ClassroomObserver::class);
+        // Event::listen('classwork.created',[PostInClassroomStream::class,'handle']);
     }
 
     /**

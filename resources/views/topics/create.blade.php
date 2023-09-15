@@ -1,4 +1,5 @@
 @include('partiels.header')
+@section('title','Create Topics')
 
     <div class="container">
     <h1>Create Topics</h1>

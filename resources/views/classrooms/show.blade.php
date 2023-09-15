@@ -2,8 +2,17 @@
 @section('title',$classroom->name)
 @section('content')
     <div class="container">
-    <h1>{{ $classroom->name }} (#{{ $classroom->id }}</h1>
-    <h3>{{$classroom->section}}</h3>
+
+
+    <div class="card text-bg-dark">
+    <img src="{{$classroom->cover_image_url }}" class="card-img-top" alt="">
+    <div class="card-img-overlay d-flex flex-column-reverse">
+    <h3 class="p-2">{{$classroom->section}}</h3>
+
+    <h1 class="p-2">{{ $classroom->name }} (#{{ $classroom->id }}</h1>
+    </div>
+    </div>
+    <hr>
 
     <div class="row">
         <div class="col-md-3">

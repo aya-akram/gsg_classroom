@@ -11,19 +11,24 @@
                     <h5 class="card-title">{{$classroom->name}}</h5>
                     <p class="card-text">{{$classroom->section}} - {{$classroom->room}}</p>
 
-                    <div class="row">
+                    <div class="d-flex flex-row">
                     <div class="col-md-3">
-                    <a href="{{$classroom->url}}" class="btn btn-sm btn-primary">View</a>
+                    <a href="{{$classroom->url}}" ><i class="fa fa-eye" style="color:cadetblue"></i></a>
                     </div>
                     <div class="col-md-3" >
-                    <a href="{{route('classrooms.edit',$classroom->id)}}" class="btn btn-sm btn-dark">Edit</a>
+                    <a href="{{route('classrooms.edit',$classroom->id)}}" ><i class="fa fa-edit" style="color:green"></i></a>
+
                     </div>
                     <div class="col-md-3">
                     <form action="{{route('classrooms.destroy',$classroom->id)}}" method="post">
                     @csrf
                     @method('delete')
-                    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
-                    </form>
+                    <a>
+                        <button type="submit" style="border: none; background: transparent;">
+                            <i class="fa fa-trash" style="color:red"></i>
+                        </button>
+                    </a>
+                 </form>
                     </div>
                     </div>
 

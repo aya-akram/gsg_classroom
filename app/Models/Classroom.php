@@ -23,6 +23,15 @@ class Classroom extends Model
         'name','section','subject','room','user_id','theme','cover_image_path','code'
     ];
 
+    protected $appends = [
+        'cover_image_url'
+    ];
+
+    protected $hidden =[
+        'cover_image_path',
+        'deleted_at'
+    ];
+
     protected static function booted(){
         // static::addGlobalScope('user',function(Builder $query){
         //     $query->where('user_id','=',Auth::id());
@@ -53,11 +62,15 @@ class Classroom extends Model
         // });
     }
 
+
     public function classworks(): HasMany{
         return $this->hasMany(Classwork::class,'classroom_id','id');
     }
     public function topics(): HasMany{
         return $this->hasMany(Topic::class,'classroom_id','id');
+    }
+    public function user(){
+        return $this->belongsTo(User::class);
     }
     public function users(){
         return $this->belongsToMany(User::class, //Related model
@@ -74,6 +87,9 @@ class Classroom extends Model
     }
     public function students(){
         return $this->users()->wherePivot('role','=','student');
+    }
+    public function streams(){
+        return $this->hasMany(Stream::class)->latest();
     }
     public function getRouteKeyName()
     {

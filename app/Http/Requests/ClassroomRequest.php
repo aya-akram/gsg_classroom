@@ -22,6 +22,7 @@ class ClassroomRequest extends FormRequest
      */
     public function rules(): array
     {
+       $id= $this->route('classrooms');
 
         return [
             'name' => ['required','string','max:255',function($attribute,$value,$fail){
@@ -32,7 +33,7 @@ class ClassroomRequest extends FormRequest
             }],
             'section' => 'nullable|string|max:255',
             'subject' => 'nullable|string|max:255',
-            'room' => 'nullable|string|max:255',
+            'room' => "nullable|string|max:255|unique:classrooms,room,$id",
             'cover_image' =>[
                 'file',
                'max:1024' ,
