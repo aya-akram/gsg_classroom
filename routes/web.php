@@ -92,6 +92,7 @@ Route::middleware('auth')->group(function () {
         });
         Route::get('/classrooms/{classroom}/join',[JoinClassroomController::class,'create'])->name('classrooms.join');
         Route::post('/classrooms/{classroom}/join',[JoinClassroomController::class,'store']);
+        Route::get('classrooms/{classroom}/chat',[ClassroomsController::class,'chat'])->name('classrooms.chat');
         Route::resources([
             'classrooms' => ClassroomsController::class,
         ]);

@@ -87,6 +87,12 @@ return $this->hasMany(Comment::class);
 public function submissions(){
     return $this->hasMany(Submission::class);
 }
+public function recivedMessages(){
+    return $this->morphMany(Message::class,'recipient');
+}
+public function sentMessages(){
+    return $this->hasMany(Message::class,'sender_id');
+}
 public function profiles(){
     return $this->hasOne(Profile::class,'user_id','id')->withDefault();
 }

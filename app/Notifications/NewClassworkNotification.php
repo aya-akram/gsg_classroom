@@ -34,9 +34,9 @@ class NewClassworkNotification extends Notification
 
         $via = [
             'database',
-            HadaraSmsChannel::class,
-            'mail',
-            'broadcast',
+            // HadaraSmsChannel::class,
+            // 'mail',
+            // 'broadcast',
            // 'vonage'
 
         ];

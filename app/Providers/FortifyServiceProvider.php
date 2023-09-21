@@ -15,6 +15,7 @@ use App\Actions\Fortify\ResetUserPassword;
 use App\Actions\Fortify\UpdateUserPassword;
 use Illuminate\Support\Facades\RateLimiter;
 use App\Actions\Fortify\UpdateUserProfileInformation;
+use Laravel\Fortify\Contracts\LoginResponse;
 
 class FortifyServiceProvider extends ServiceProvider
 {
@@ -31,6 +32,19 @@ class FortifyServiceProvider extends ServiceProvider
                 'fortify.username' => 'username'
             ]);
         }
+        $loginRes = new class implements LoginResponse
+        {
+            public function toResponse($request) {
+                $user = $request->user();
+                if($user instanceof Admin) {
+                    return redirect('admin/2fa');
+                }
+                return redirect()->intended(route('classrooms.index'));
+
+            }
+        };
+        $this->app->instance(LoginResponse::class,$loginRes);
+
     }
 
     /**

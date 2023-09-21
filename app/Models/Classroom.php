@@ -91,6 +91,10 @@ class Classroom extends Model
     public function streams(){
         return $this->hasMany(Stream::class)->latest();
     }
+
+    public function messages(){
+        return $this->morphMany(Message::class,'recipient');
+    }
     public function getRouteKeyName()
     {
         return 'id';

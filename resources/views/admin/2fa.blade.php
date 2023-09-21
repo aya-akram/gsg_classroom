@@ -1,7 +1,12 @@
 <x-main-layout title="2FA">
     @if ($user->two_factor_secret && $user->two_factor_confirmed_at)
     <h3>Recovery Codes</h3>
-    
+    <ul>
+        @foreach ($user->recoveryCodes() as $code )
+        <li>{{$code}}</li>
+        @endforeach
+
+    </ul>
     <form action="{{route('two-factor.disable')}}" method="post">
         @csrf
         @method('delete')

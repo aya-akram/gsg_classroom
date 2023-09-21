@@ -4,6 +4,7 @@ namespace App\Listeners;
 
 use App\Models\User;
 use App\Events\ClassworkCreated;
+use App\Jobs\SendClassworkNotification;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Notifications\NewClassworkNotification;
@@ -30,7 +31,14 @@ class SendNotificationToAssignedStudents
         // foreach($event->classwork->users as $user){
         //     $user->notify(new NewClassworkNotification($event->classwork));
         // }
-        Notification::send($event->classwork->users,new NewClassworkNotification($event->classwork));
+        $classwork = $event->classwork;
+        $jobs = new SendClassworkNotification(
+            $classwork->users,new NewClassworkNotification($classwork)
+        );
+        dispatch($jobs)->onQueue('default');
+        // SendClassworkNotification::dispatch($classwork->users,new NewClassworkNotification($classwork));
+        // Notification::send();
+        
 
     }
 }

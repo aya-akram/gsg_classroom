@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\v1\AccessTokensController;
 use App\Http\Controllers\Api\v1\ClassroomsController as V1ClassroomsController;
 use App\Http\Controllers\Api\v1\ClassworksController;
+use App\Http\Controllers\Api\V1\ClassroomMessagesController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -26,6 +27,9 @@ Route::prefix('v1')->group(function(){
 
         Route::apiresource('/classrooms',V1ClassroomsController::class);
         Route::apiResource('classrooms.classworks',ClassworksController::class);
+        Route::apiResource('classrooms.messages',   ClassroomMessagesController::class);
+
+
     });
 
     Route::middleware('guest:sanctum')->group(function(){
